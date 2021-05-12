@@ -1,5 +1,6 @@
-# Project namespace: wshihadeh by default
-NAMESPACE ?= wshihadeh
+# Project namespace: mcltn by default
+NAMESPACE ?= mcltn
+
 # Docker registry
 REGISTRY ?= index.docker.io
 

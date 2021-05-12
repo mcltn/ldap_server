@@ -1,8 +1,8 @@
 FROM osixia/openldap
 
-LABEL maintainer="wshihadeh.devx@gmail.com"
+LABEL maintainer="matt.colton@gmail.com"
 
-ENV LDAP_ORGANISATION="Al-waleed Test Org" \
-    LDAP_DOMAIN="shihadeh.intern"
+ENV LDAP_ORGANISATION="POC Org" \
+    LDAP_DOMAIN="poc.internal"
 
 COPY bootstrap.ldif /container/service/slapd/assets/config/bootstrap/ldif/50-bootstrap.ldif

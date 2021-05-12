@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ldapserver
+  labels:
+    app: ldapserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ldapserver
+  template:
+    metadata:
+      labels:
+        app: ldapserver
+    spec:
+      containers:
+      - name: ldap_server
+        image: mcltn/ldapserver:0.0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 389
+        volumeMounts:
+        - mountPath: /var/lib/ldap
+          name: ldap_data
+        - mountPath: /etc/ldap/slapd.d
+          name: ldap_config
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: LDAP_ADMIN_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: ldapserver-map
+              key: LDAP_ADMIN_PASSWORD
+        - name: LDAP_BASE_DN
+          valueFrom:
+            configMapKeyRef:
+              name: ldapserver-map
+              key: LDAP_BASE_DN
+      - name: ldap_server_admin
+        image: osixia/phpldapadmin:0.7.2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: PHPLDAPADMIN_LDAP_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              name: ldapserver-map
+              key: PHPLDAPADMIN_LDAP_HOSTS
+        - name: PHPLDAPADMIN_HTTPS
+          valueFrom:
+            configMapKeyRef:
+              name: ldapserver-map
+              key: PHPLDAPADMIN_HTTPS
+      volumes:
+        - name: ldap_data
+          emptyDir: {}
+        - name: ldap_config
+          emptyDir: {}
